@@ -28,12 +28,12 @@
             "EragPermission\\": "src/"
         }
     },
+    "prefer-stable": true,
     "extra": {
         "laravel": {
             "providers": [
                 "EragPermission\\PermissionServiceProvider"
             ]
         }
-    },
-    "prefer-stable": true
+    }
 }
