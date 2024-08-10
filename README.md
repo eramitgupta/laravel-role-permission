@@ -31,28 +31,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasPermissionsTrait;
-
-    // Your existing code...
-
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    use HasFactory, Notifiable, HasPermissionsTrait
 }
 ```
 
@@ -69,7 +48,7 @@ DB_USERNAME=your_database_user
 DB_PASSWORD=your_database_password
 ```
 
-Make sure to replace `your_database_name`, `your_database_user`, and `your_database_password` with your actual database credentials.
+Make sue `your_database_name`, `your_database_user`, and `your_database_password` with your actual database credentials.
 
 ### Step 3: Automatic Database Setup
 
