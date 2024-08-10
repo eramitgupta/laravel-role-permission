@@ -1,8 +1,7 @@
-Here’s the updated README file with the addition of the `HasPermissionsTrait` to the User model:
 
----
+### Laravel Role-Permission
 
-## Zero Configuration Role-Permission Setup
+This package provides an effortless way to manage roles and permissions in your Laravel application. With automatic database configuration, one-command publishing, and easy integration, you can quickly set up robust role-based access control without any hassle.
 
 <p align="center">
   <a href="https://paypal.me/teamdevgeek">
@@ -18,7 +17,7 @@ composer require erag/laravel-role-permission
 
 ### Step 1: Add Trait to User Model
 
-Before publishing the role-permission files, add the `HasPermissionsTrait` to your `User` model. This trait is essential for handling roles and permissions in your application.
+Before configuring the database and publishing the role-permission files, add the `HasPermissionsTrait` to your `User` model. This trait is essential for handling roles and permissions in your application.
 
 ```php
 <?php
@@ -57,13 +56,28 @@ class User extends Authenticatable
 }
 ```
 
-### Step 2: Automatic Database Configuration
+### Step 2: Database Configuration
 
-After installation, your database will be automatically configured to run the necessary migrations and seeders without any additional setup.
+Before proceeding with the setup, ensure that your database connection is properly configured in your `.env` file. Example configuration:
 
-### Step 3: Publish Role-Permission Files
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_user
+DB_PASSWORD=your_database_password
+```
 
-Once the trait is added and the database is configured, publish the required migration and model files with a single command:
+Make sure to replace `your_database_name`, `your_database_user`, and `your_database_password` with your actual database credentials.
+
+### Step 3: Automatic Database Setup
+
+After configuring your database connection, the package will automatically set up your database by running the necessary migrations and seeders without any additional setup.
+
+### Step 4: Publish Role-Permission Files
+
+Once the database is configured, publish the required migration and model files with a single command:
 
 ```bash
 php artisan erag:publish-permission
@@ -75,7 +89,7 @@ This command will:
 - Publish and run the required migrations.
 - Automatically run the seeder to set up roles and permissions in your database.
 
-### Step 4: Register the Service Provider
+### Step 5: Register the Service Provider
 
 #### For Laravel v11.x
 
@@ -99,7 +113,7 @@ Ensure the service provider is registered in your `config/app.php` file:
 ],
 ```
 
-### Step 5: Using Role-Based Permissions
+### Step 6: Using Role-Based Permissions
 
 You can now easily check user permissions within your application logic:
 
@@ -109,7 +123,7 @@ if (auth()->user()->can('permission_name')) {
 }
 ```
 
-### Step 6: Protecting Routes with Middleware
+### Step 7: Protecting Routes with Middleware
 
 To protect routes based on roles and permissions, you can use the provided middleware. For example, to allow only users with the `user` role and `create-user` permission:
 
@@ -121,10 +135,9 @@ Route::group(['middleware' => ['role:user,create-user']], function() {
 Route::group(['middleware' => ['role:admin,create-post']], function() {
     // Protected routes go here
 });
-
 ```
 
-### Step 7: Displaying Content Based on Roles
+### Step 8: Displaying Content Based on Roles
 
 You can also use Blade directives to display content based on the user's role:
 
@@ -263,5 +276,3 @@ The MIT License (MIT). Please see the License File for more information.
 > Donate [@eramitgupta](https://paypal.me/teamdevgeek/)
 
 ---
-
-This README now includes a complete setup guide, usage examples, and a seeder for roles and permissions, ensuring that your application is ready to use the role-permission package.
