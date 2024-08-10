@@ -1,0 +1,39 @@
+{
+    "name": "erag/laravel-role-permission",
+    "description": "Role Permission handling for Laravel v10x",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "permission",
+        "permissions",
+        "roles",
+        "acl",
+        "rbac",
+        "security",
+        "laravel custom role permissions",
+        "easy role permission laravel"
+    ],
+    "authors": [
+        {
+            "name": "Er Amiit Gupta",
+            "email": "info.eramitgupta@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "EragPermission\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EragPermission\\PermissionServiceProvider"
+            ]
+        }
+    },
+    "prefer-stable": true
+}
