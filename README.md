@@ -54,21 +54,7 @@ Make sue `your_database_name`, `your_database_user`, and `your_database_password
 
 After configuring your database connection, the package will automatically set up your database by running the necessary migrations and seeders without any additional setup.
 
-### Step 4: Publish Role-Permission Files
-
-Once the database is configured, publish the required migration and model files with a single command:
-
-```bash
-php artisan erag:publish-permission
-```
-
-This command will:
-
-- Publish Role and Permission models.
-- Publish and run the required migrations.
-- Automatically run the seeder to set up roles and permissions in your database.
-
-### Step 5: Register the Service Provider
+### Step 4: Register the Service Provider
 
 #### For Laravel v11.x
 
@@ -91,6 +77,20 @@ Ensure the service provider is registered in your `config/app.php` file:
     EragPermission\PermissionServiceProvider::class,
 ],
 ```
+
+### Step 5: Publish Role-Permission Files
+
+Once the database is configured, publish the required migration and model files with a single command:
+
+```bash
+php artisan erag:publish-permission
+```
+
+This command will:
+
+- Publish Role and Permission models.
+- Publish and run the required migrations.
+- Automatically run the seeder to set up roles and permissions in your database.
 
 ### Step 6: Using Role-Based Permissions
 
