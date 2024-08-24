@@ -3,12 +3,6 @@
 
 This package provides an effortless way to manage roles and permissions in your Laravel application. With automatic database configuration, one-command publishing, and easy integration, you can quickly set up robust role-based access control without any hassle.
 
-<p align="center">
-  <a href="https://paypal.me/teamdevgeek">
-   Donate
-  </a>
-</p>
-
 ### Getting Started
 
 ```bash
