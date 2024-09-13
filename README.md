@@ -24,7 +24,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasPermissionsTrait;
+    use HasFactory, HasPermissionsTrait, Notifiable;
 
     public function roles()
     {
