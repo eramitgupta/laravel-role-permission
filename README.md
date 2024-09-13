@@ -1,6 +1,6 @@
 # Laravel Role-Permission
 
-This package provides an effortless way to manage roles and permissions in your Laravel application. With automatic database configuration, one-command publishing, and easy integration, you can quickly set up robust role-based access control without any hassle.
+This package provides an effortless way to manage roles and permissions in your Laravel application. With automatic database configuration, one-command publishing, and easy integration, you can quickly set up robust role-based access control without hassle.
 
 ## Getting Started
 
