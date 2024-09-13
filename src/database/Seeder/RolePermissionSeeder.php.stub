@@ -45,8 +45,8 @@ class RolePermissionSeeder extends Seeder
     private function seedRoles(): void
     {
         $roles = [
-            'admin' => ['create-post'],
-            'user' => ['create-user'],
+            'admin' => ['create-post', 'post-edit', 'post-delete', 'post-update'],
+            'user' => ['create-user', 'user-edit', 'user-delete', 'user-update'],
         ];
 
         foreach ($roles as $roleName => $permissionNames) {

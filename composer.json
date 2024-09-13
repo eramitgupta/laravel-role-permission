@@ -1,6 +1,6 @@
 {
     "name": "erag/laravel-role-permission",
-    "description": "Role Permission handling for Laravel v10x",
+    "description": "Role Permission handling for Laravel v10x, v11x",
     "license": "MIT",
     "keywords": [
         "laravel",
@@ -20,10 +20,15 @@
             "role": "Developer"
         }
     ],
+    "homepage": "https://github.com/eramitgupta/laravel-role-permission",
     "require": {
-        "php": ">=8.0.0"
+        "php": ">=8.0.0",
+        "illuminate/database": "^8.12|^9.0|^10.0|^11.0"
     },
     "autoload": {
+        "files": [
+            "src/HelperRolePermission.php"
+        ],
         "psr-4": {
             "EragPermission\\": "src/"
         }

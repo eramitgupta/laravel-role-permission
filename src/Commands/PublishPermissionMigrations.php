@@ -15,8 +15,8 @@ class PublishPermissionMigrations extends Command
         parent::__construct();
     }
 
-    public function handle()
-    {   
+    public function handle(): void
+    {
         // Step 1: Publish the models
         $this->info('Publishing models...');
         $this->call('vendor:publish', [
@@ -34,7 +34,6 @@ class PublishPermissionMigrations extends Command
         // Step 3: Run the migrations
         $this->info('Running migrations...');
         $exitCode = $this->call('migrate', ['--force' => true]);
-
 
         if ($exitCode === 0) {
             $this->info('Migrations completed successfully.');
@@ -63,10 +62,8 @@ class PublishPermissionMigrations extends Command
                 $this->error('Seeder process encountered errors.');
             }
         } catch (\Exception $e) {
-            $this->error('Error running seeder: ' . $e->getMessage());
+            $this->error('Error running seeder: '.$e->getMessage());
         }
-
-
 
     }
 }

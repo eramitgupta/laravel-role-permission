@@ -2,8 +2,8 @@
 
 namespace EragPermission\Traits;
 
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
 
 trait HasPermissionsTrait
 {
@@ -14,6 +14,7 @@ trait HasPermissionsTrait
             return $this;
         }
         $this->permissions()->saveMany($permissions);
+
         return $this;
     }
 
@@ -21,37 +22,47 @@ trait HasPermissionsTrait
     {
         $permissions = $this->getAllPermissions($permissions);
         $this->permissions()->detach($permissions);
+
         return $this;
     }
 
     public function refreshPermissions(...$permissions)
     {
         $this->permissions()->detach();
+
         return $this->givePermissionsTo($permissions);
     }
 
-    public function hasPermissionTo($permission)
+    public function hasPermissionTo(...$permissions): bool
     {
-        return $this->hasPermissionThroughRole($permission) && $this->hasPermission($permission);
+        foreach ($permissions as $permission) {
+            if (! $this->hasPermissionThroughRole($permission) && ! $this->hasPermission($permission)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    public function hasPermissionThroughRole($permission)
+    public function hasPermissionThroughRole($permission): bool
     {
-        foreach($permission->roles as $role) {
+        foreach ($permission?->roles as $role) {
             if ($this->roles->contains($role)) {
                 return true;
             }
         }
+
         return false;
     }
 
-    public function hasRole(...$roles)
+    public function hasRole(...$roles): bool
     {
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             if ($this->roles->contains('name', $role)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -59,11 +70,13 @@ trait HasPermissionsTrait
     {
         return $this->belongsToMany(Role::class, 'users_roles');
     }
+
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'users_permissions');
     }
-    protected function hasPermission($permission)
+
+    protected function hasPermission($permission): bool
     {
         return (bool) $this->permissions->where('name', $permission->name)->count();
     }
