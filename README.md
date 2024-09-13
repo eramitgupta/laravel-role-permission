@@ -100,14 +100,6 @@ if (auth()->user()->can('permission_name')) {
 }
 ```
 
-OR
-
-```php
-if (auth()->user()->can('permission_name_1', 'permission_name_2')) {
-    // The user has one of the specified permissions
-}
-```
-
 You can also use the helper method:
 
 ```php
