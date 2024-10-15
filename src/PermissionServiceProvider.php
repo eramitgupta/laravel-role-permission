@@ -70,5 +70,13 @@ class PermissionServiceProvider extends ServiceProvider
         Blade::directive('endrole', function () {
             return '<?php endif; ?>';
         });
+
+        Blade::directive('permission', function ($permission) {
+            return "<?php if(auth()->check() && auth()->user()->can({$permission})) : ?>";
+        });
+
+        Blade::directive('endpermission', function () {
+            return '<?php endif; ?>';
+        });
     }
 }
