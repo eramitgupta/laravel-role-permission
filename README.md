@@ -1,6 +1,9 @@
 # Laravel Role-Permission
+<center>
+<img width="956" alt="Screenshot 2024-10-04 at 10 34 23 PM" src="https://github.com/user-attachments/assets/e78bffcf-6665-464b-a9a1-f6d8c72a9301">
+</center>
 
-This package provides an effortless way to manage roles and permissions in your Laravel application. With automatic database configuration, one-command publishing, and easy integration, you can quickly set up robust role-based access control without any hassle.
+This package provides an effortless way to manage roles and permissions in your Laravel application. With automatic database configuration, one-command publishing, and easy integration, you can quickly set up robust role-based access control without hassle.
 
 ## Getting Started
 
@@ -24,7 +27,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasPermissionsTrait;
+    use HasFactory, HasPermissionsTrait, Notifiable;
 
     public function roles()
     {
@@ -100,14 +103,6 @@ if (auth()->user()->can('permission_name')) {
 }
 ```
 
-OR
-
-```php
-if (auth()->user()->can('permission_name_1', 'permission_name_2')) {
-    // The user has one of the specified permissions
-}
-```
-
 You can also use the helper method:
 
 ```php
@@ -176,6 +171,16 @@ You can also use Blade directives to display content based on the user's role:
 @role('user')
     {{ __('You are a user') }}
 @endrole
+```
+
+## Step 9: Displaying Content Based on Permissions
+
+You can also use Blade directives to display content based on the user's permissions:
+
+```php
+@permission('create-post')
+    {{ __('You can create a post') }}
+@endpermission
 ```
 
 ## Example Seeder for Roles and Permissions
