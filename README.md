@@ -13,7 +13,7 @@ composer require erag/laravel-role-permission
 
 ## Step 1: Add Trait to User Model & Define Relationships
 
-Before configuring the database and publishing the role-permission files, add the `HasPermissionsTrait` and `roles` to define relationships in your `User` model. This trait is essential for handling roles and permissions in your application.
+Before configuring the database and publishing the role-permission files, add the `HasPermissionsTrait` to define in your `User` model. This trait is essential for handling roles and permissions in your application.
 
 ```php
 <?php
@@ -29,10 +29,6 @@ class User extends Authenticatable
 {
     use HasFactory, HasPermissionsTrait, Notifiable;
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'users_roles');
-    }
 }
 ```
 

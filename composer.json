@@ -16,8 +16,7 @@
     "authors": [
         {
             "name": "Er Amiit Gupta",
-            "email": "info.eramitgupta@gmail.com",
-            "role": "Developer"
+            "email": "info.eramitgupta@gmail.com"
         }
     ],
     "homepage": "https://github.com/eramitgupta/laravel-role-permission",
