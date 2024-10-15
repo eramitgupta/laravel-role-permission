@@ -10,7 +10,7 @@
         "acl",
         "rbac",
         "security",
-        "laravel custom role permissions",
+        "laravel role permissions",
         "easy role permission laravel"
     ],
     "authors": [
