@@ -173,6 +173,16 @@ You can also use Blade directives to display content based on the user's role:
 @endrole
 ```
 
+## Step 9: Displaying Content Based on Permissions
+
+You can also use Blade directives to display content based on the user's permissions:
+
+```php
+@permission('create-post')
+    {{ __('You can create a post') }}
+@endpermission
+```
+
 ## Example Seeder for Roles and Permissions
 
 Here's an example `RolePermissionSeeder` that seeds roles, permissions, and users:
