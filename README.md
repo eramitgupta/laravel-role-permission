@@ -1,8 +1,11 @@
 # Laravel Role-Permission
+<center>
 
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://img.shields.io/packagist/v/erag/laravel-role-permission?label=Stable)](https://packagist.org/packages/erag/laravel-role-permission)
 [![Total Downloads](https://img.shields.io/packagist/dt/erag/laravel-role-permission.svg?label=Downloads)](https://packagist.org/packages/erag/laravel-role-permission)
+
+</center>
 
 <center>
 <img width="956" alt="Screenshot 2024-10-04 at 10 34 23 PM" src="https://github.com/user-attachments/assets/e78bffcf-6665-464b-a9a1-f6d8c72a9301">
@@ -193,9 +196,9 @@ Here's an example `RolePermissionSeeder` that seeds roles, permissions, and user
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use App\Models\User;
-use App\Models\Permission;
+use EragPermission\Models\Role;
+use EragPermission\Models\Permission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
