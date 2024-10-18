@@ -2,12 +2,12 @@
 
 namespace EragPermission;
 
-use EragPermission\Models\Role;
-use EragPermission\Models\Permission;
 use EragPermission\Commands\PublishPermissionMigrations;
 use EragPermission\Contracts\PermissionContract;
 use EragPermission\Contracts\RoleContract;
 use EragPermission\Middleware\RolePermissionMiddleware;
+use EragPermission\Models\Permission;
+use EragPermission\Models\Role;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -23,7 +23,6 @@ class PermissionServiceProvider extends ServiceProvider
         $this->commands([
             PublishPermissionMigrations::class,
         ]);
-
 
         $this->publishes([
             __DIR__.'/database/01_create_roles_table.php.stub' => database_path('migrations/0001_create_roles_table.php'),
@@ -74,15 +73,14 @@ class PermissionServiceProvider extends ServiceProvider
         });
     }
 
-
     protected function ModelBindings()
     {
         $this->app->bind(RoleContract::class, function ($app) {
-            return new Role();
+            return new Role;
         });
 
         $this->app->bind(PermissionContract::class, function ($app) {
-            return new Permission();
+            return new Permission;
         });
     }
 }
