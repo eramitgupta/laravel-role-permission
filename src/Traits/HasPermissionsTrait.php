@@ -2,8 +2,8 @@
 
 namespace EragPermission\Traits;
 
-use App\Models\Permission;
-use App\Models\Role;
+use EragPermission\Models\Permission;
+use EragPermission\Models\Role;
 
 trait HasPermissionsTrait
 {

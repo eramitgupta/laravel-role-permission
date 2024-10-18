@@ -17,21 +17,13 @@ class PublishPermissionMigrations extends Command
 
     public function handle(): void
     {
-        // Step 1: Publish the models
-        $this->info('Publishing models...');
-        $this->call('vendor:publish', [
-            '--tag' => 'erag:publish-permission-models',
-            '--force' => true,
-        ]);
 
-        // Step 2: Publish the migrations
         $this->info('Publishing migrations...');
         $this->call('vendor:publish', [
             '--tag' => 'erag:publish-permission-migrations',
             '--force' => true,
         ]);
 
-        // Step 3: Run the migrations
         $this->info('Running migrations...');
         $exitCode = $this->call('migrate', ['--force' => true]);
 
@@ -41,14 +33,12 @@ class PublishPermissionMigrations extends Command
             $this->error('Migration process encountered errors.');
         }
 
-        // Step 4: Publish the seeder
         $this->info('Publishing seeder...');
         $this->call('vendor:publish', [
             '--tag' => 'erag:publish-permission-role-seeder',
             '--force' => true,
         ]);
 
-        // Step 5: Run the seeder
         $this->info('Running seeder...');
         try {
             $exitCode = $this->call('db:seed', [

@@ -1,21 +1,22 @@
 {
     "name": "erag/laravel-role-permission",
-    "description": "Role Permission handling for Laravel v10x, v11x",
+    "description": "A simple and easy-to-install role and permission management package for Laravel, supporting versions 10.x and 11.x.",
     "license": "MIT",
     "keywords": [
         "laravel",
-        "permission",
+        "role-permission",
         "permissions",
         "roles",
         "acl",
         "rbac",
         "security",
+        "access control",
         "laravel role permissions",
         "easy role permission laravel"
     ],
     "authors": [
         {
-            "name": "Er Amiit Gupta",
+            "name": "Er Amit Gupta",
             "email": "info.eramitgupta@gmail.com"
         }
     ],
