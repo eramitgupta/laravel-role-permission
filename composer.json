@@ -1,6 +1,6 @@
 {
     "name": "erag/laravel-role-permission",
-    "description": "A simple and easy-to-install role and permission management package for Laravel, supporting versions 10.x and 11.x.",
+    "description": "A simple and easy-to-install role and permission management package for Laravel, supporting versions 10.x and 11.x",
     "license": "MIT",
     "keywords": [
         "laravel",
