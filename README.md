@@ -7,7 +7,7 @@
 
 <div align="center">
 
-[![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
+[![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](https://github.com/eramitgupta/laravel-role-permission/blob/main/LICENSE)
 [![Latest Stable Version](https://img.shields.io/packagist/v/erag/laravel-role-permission?label=Stable)](https://packagist.org/packages/erag/laravel-role-permission)
 [![Total Downloads](https://img.shields.io/packagist/dt/erag/laravel-role-permission.svg?label=Downloads)](https://packagist.org/packages/erag/laravel-role-permission)
 
