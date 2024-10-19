@@ -26,6 +26,11 @@ composer require erag/laravel-role-permission
 
 Before configuring the database and publishing the role-permission files, add the `HasPermissionsTrait` to define in your `User` model. This trait is essential for handling roles and permissions in your application.
 
+```base
+HasPermissionsTrait
+```
+
+
 ```php
 <?php
 
