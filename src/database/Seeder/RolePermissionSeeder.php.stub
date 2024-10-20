@@ -31,7 +31,7 @@ class RolePermissionSeeder extends Seeder
     {
         $permissions = [
             'post-create',
-            'user-create,
+            'user-create',
         ];
 
         foreach ($permissions as $permissionName) {
@@ -46,7 +46,7 @@ class RolePermissionSeeder extends Seeder
     {
         $roles = [
             'admin' => ['post-create', 'post-edit', 'post-delete', 'post-update'],
-            'user' => ['user-create, 'user-edit', 'user-delete', 'user-update'],
+            'user' => ['user-create', 'user-edit', 'user-delete', 'user-update'],
         ];
 
         foreach ($roles as $roleName => $permissionNames) {
@@ -78,7 +78,7 @@ class RolePermissionSeeder extends Seeder
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
-                'permissions' => ['user-create],
+                'permissions' => ['user-create'],
             ],
         ];
 
