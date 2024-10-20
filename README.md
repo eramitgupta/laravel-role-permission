@@ -168,7 +168,8 @@ getRoles();
 To protect routes based on roles and permissions, you can use the provided middleware. For example, to allow only users with the `user` role and `create-user` permission:
 
 ```php
-Route::group(['middleware' => ['role:user,user-create]], function () {
+
+Route::group(['middleware' => ['role:user,user-create']], function () {
     // Protected routes go here
 });
 
@@ -235,7 +236,7 @@ class RolePermissionSeeder extends Seeder
     {
         $permissions = [
             'post-create',
-            'user-create,
+            'user-create',
         ];
 
         foreach ($permissions as $permissionName) {
@@ -277,6 +278,7 @@ class RolePermissionSeeder extends Seeder
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
                 'permissions' => ['user-create],
+                'permissions' => ['user-create'],
             ],
         ];
 
