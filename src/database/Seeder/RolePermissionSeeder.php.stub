@@ -3,11 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use EragPermission\Models\Role;
+use Carbon\Carbon;
 use EragPermission\Models\Permission;
+use EragPermission\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash; // Import Carbon for handling dates
 
 class RolePermissionSeeder extends Seeder
 {
@@ -32,10 +33,18 @@ class RolePermissionSeeder extends Seeder
         $permissions = [
             'create-post',
             'create-user',
+            'post-edit',
+            'post-delete',
+            'post-update',
+            'user-edit',
+            'user-delete',
+            'user-update',
         ];
 
         foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate(['name' => $permissionName]);
+            Permission::firstOrCreate(['name' => $permissionName], [
+                'expires_at' => Carbon::now()->addDays(2), // Set expiration date (optional)
+            ]);
         }
     }
 
@@ -47,15 +56,20 @@ class RolePermissionSeeder extends Seeder
         $roles = [
             'admin' => ['create-post', 'post-edit', 'post-delete', 'post-update'],
             'user' => ['create-user', 'user-edit', 'user-delete', 'user-update'],
+            'editor' => ['create-user', 'user-edit', 'user-delete', 'user-update'],
         ];
 
         foreach ($roles as $roleName => $permissionNames) {
-            $role = Role::firstOrCreate(['name' => $roleName]);
+            $role = Role::firstOrCreate(['name' => $roleName], [
+                'expires_at' => Carbon::now()->addDays(2), // Set expiration date (optional)
+            ]);
 
             foreach ($permissionNames as $permissionName) {
-                $permission = Permission::firstOrCreate(['name' => $permissionName]);
-                $role->permissions()->syncWithoutDetaching($permission);
-                $permission->roles()->syncWithoutDetaching($role);
+                $permission = Permission::where('name', $permissionName)->first();
+                if ($permission) {
+                    $role->permissions()->syncWithoutDetaching($permission);
+                    $permission->roles()->syncWithoutDetaching($role);
+                }
             }
         }
     }
@@ -70,7 +84,7 @@ class RolePermissionSeeder extends Seeder
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin'),
-                'roles' => ['admin'],
+                'roles' => ['admin', 'editor'],
                 'permissions' => ['create-post'],
             ],
             [
