@@ -99,10 +99,17 @@ Once the database is configured, publish the required migration and model files 
 php artisan erag:publish-permission
 ```
 
-This command will:
+This command will publish the required migrations:
 
-- Publish and run the required migrations.
-- Automatically run the seeder to set up roles and permissions in your database.
+```bash
+php artisan erag:publish-permission --migrate
+```
+
+If you want to run the published migrations and seed the datbase you cann add `--migrate` and `--seed` respectively. Then the command will automatically run the migrations and the seeder to set up roles and permissions in your database.
+
+```bash
+php artisan erag:publish-permission --migrate --seed
+```
 
 ## Step 6: Using Role-Based Permissions
 
@@ -161,6 +168,7 @@ getRoles();
 To protect routes based on roles and permissions, you can use the provided middleware. For example, to allow only users with the `user` role and `create-user` permission:
 
 ```php
+
 Route::group(['middleware' => ['role:user,user-create']], function () {
     // Protected routes go here
 });
@@ -240,7 +248,7 @@ class RolePermissionSeeder extends Seeder
     {
         $roles = [
             'admin' => ['post-create', 'post-edit', 'post-delete', 'post-update'],
-            'user' => ['user-create', 'user-edit', 'user-delete', 'user-update'],
+            'user' => ['user-create, 'user-edit', 'user-delete', 'user-update'],
         ];
 
         foreach ($roles as $roleName => $permissionNames) {
@@ -269,6 +277,7 @@ class RolePermissionSeeder extends Seeder
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
+                'permissions' => ['user-create],
                 'permissions' => ['user-create'],
             ],
         ];
