@@ -2,6 +2,7 @@
 
 namespace EragPermission;
 
+use EragPermission\Commands\NewUpdate;
 use EragPermission\Commands\PublishPermissionMigrations;
 use EragPermission\Contracts\PermissionContract;
 use EragPermission\Contracts\RoleContract;
@@ -22,6 +23,7 @@ class PermissionServiceProvider extends ServiceProvider
     {
         $this->commands([
             PublishPermissionMigrations::class,
+            NewUpdate::class,
         ]);
 
         $this->publishes([
@@ -32,6 +34,10 @@ class PermissionServiceProvider extends ServiceProvider
             __DIR__.'/database/05_create_roles_permissions_table.php.stub' => database_path('migrations/0005_create_roles_permissions_table.php'),
 
         ], 'erag:publish-permission-migrations');
+
+        $this->publishes([
+            __DIR__.'/database/06_users_permissions_and_users_roles_add_column.php.stub' => database_path('migrations/06_users_permissions_and_users_roles_add_column.php'),
+        ], 'erag:new-update');
 
         $this->publishes([
             __DIR__.'/database/Seeder/RolePermissionSeeder.php.stub' => database_path('seeders/RolePermissionSeeder.php'),
@@ -73,7 +79,7 @@ class PermissionServiceProvider extends ServiceProvider
         });
     }
 
-    protected function ModelBindings()
+    protected function ModelBindings(): void
     {
         $this->app->bind(RoleContract::class, function ($app) {
             return new Role;
