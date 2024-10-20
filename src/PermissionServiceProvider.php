@@ -11,6 +11,7 @@ use EragPermission\Models\Role;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class PermissionServiceProvider extends ServiceProvider
@@ -50,11 +51,13 @@ class PermissionServiceProvider extends ServiceProvider
         $router->aliasMiddleware('role', RolePermissionMiddleware::class);
         $router->middlewareGroup('role', [RolePermissionMiddleware::class]);
 
-        Permission::with('roles.users')->get()->each(function ($permission) {
-            Gate::define($permission->name, function ($user) use ($permission) {
-                return $user->hasPermissionTo($permission);
+        if (Schema::hasTable('users') && Schema::hasTable('roles') && Schema::hasTable('permissions')) {
+            Permission::with('roles.users')->get()->each(function ($permission) {
+                Gate::define($permission->name, function ($user) use ($permission) {
+                    return $user->hasPermissionTo($permission);
+                });
             });
-        });
+        }
 
         Blade::directive('role', function ($role) {
             return "<?php if(auth()->check() && auth()->user()->hasRole({$role})) : ?>";
