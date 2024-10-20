@@ -24,7 +24,6 @@ class PublishPermissionMigrations extends Command
             '--force' => true,
         ]);
 
-
         if ($this->option('migrate')) {
             $this->info('Running migrations...');
             $exitCode = $this->call('migrate', ['--force' => true]);
@@ -56,7 +55,7 @@ class PublishPermissionMigrations extends Command
                     $this->error('Seeder process encountered errors.');
                 }
             } catch (\Exception $e) {
-                $this->error('Error running seeder: ' . $e->getMessage());
+                $this->error('Error running seeder: '.$e->getMessage());
             }
         }
     }
