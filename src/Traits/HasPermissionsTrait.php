@@ -2,6 +2,7 @@
 
 namespace EragPermission\Traits;
 
+use Carbon\Carbon;
 use EragPermission\Models\Permission;
 use EragPermission\Models\Role;
 
@@ -37,9 +38,23 @@ trait HasPermissionsTrait
     {
         $permissions = $this->getAllPermissions($permissions);
 
-        return $permissions->every(function ($permission) {
-            return $this->hasPermissionThroughRole($permission) && $this->hasPermission($permission);
+        return $permissions->isNotEmpty() && $permissions->every(function ($permission) {
+            return $this->hasPermissionThroughRole($permission) && $this->hasValidPermission($permission);
         });
+    }
+
+    public function hasPermissions(string $permissions): bool
+    {
+        $permissions = preg_split('/[,|]/', $permissions);
+        if (is_array($permissions)) {
+            foreach ($permissions as $permission) {
+                if (! $this->hasPermissionTo($permission)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public function hasPermissionThroughRole($permission): bool
@@ -51,9 +66,29 @@ trait HasPermissionsTrait
 
     public function hasRole(...$roles): bool
     {
-        $userRoles = $this->roles->pluck('name')->toArray();
+        $userRoles = $this->roles->filter(function ($role) {
+            return $this->hasValidRole($role);
+        })->pluck('name')->toArray();
 
-        return ! empty(array_intersect($roles, $userRoles));
+        return empty(array_diff($roles, $userRoles));
+    }
+
+    protected function hasValidPermission($permission): bool
+    {
+        if ($permission->expires_at === null) {
+            return true;
+        }
+
+        return Carbon::now()->lt($permission->expires_at);
+    }
+
+    protected function hasValidRole($role): bool
+    {
+        if ($role->expires_at === null) {
+            return true;
+        }
+
+        return Carbon::now()->lt($role->expires_at);
     }
 
     public function roles()
@@ -73,6 +108,7 @@ trait HasPermissionsTrait
 
     protected function getAllPermissions(array $permissions)
     {
-        return Permission::whereIn('name', $permissions)->with('roles')->get();
+        $permissionNames = array_map(fn ($permission) => is_object($permission) ? $permission->name : $permission, $permissions);
+        return Permission::whereIn('name', $permissionNames)->with('roles')->get();
     }
 }

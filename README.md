@@ -130,6 +130,15 @@ if (hasPermissions('post-create')) {
     dd('You are not allowed to access');
 }
 ```
+OR
+
+```php
+if (hasPermissions('post-create|post-edit')) {
+    dd('You are allowed to access');
+} else {
+    dd('You are not allowed to access');
+}
+```
 
 To get all permissions:
 
@@ -190,6 +199,11 @@ You can also use Blade directives to display content based on the user's permiss
 @permission('post-create')
     {{ __('You can create a post') }}
 @endpermission
+
+
+@hasPermissions('post-create|post-edit')
+    {{ __('You can create a post') }}
+@endhasPermissions
 ```
 
 ## Example Seeder for Roles and Permissions
