@@ -131,16 +131,6 @@ if (hasPermissions('post-create')) {
 }
 ```
 
-OR
-
-```php
-if (hasPermissions('post-create', 'post-edit')) {
-    dd('You are allowed to access');
-} else {
-    dd('You are not allowed to access');
-}
-```
-
 To get all permissions:
 
 ```php
