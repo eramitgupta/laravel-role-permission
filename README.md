@@ -26,6 +26,11 @@ composer require erag/laravel-role-permission
 
 Before configuring the database and publishing the role-permission files, add the `HasPermissionsTrait` to define in your `User` model. This trait is essential for handling roles and permissions in your application.
 
+```base
+HasPermissionsTrait
+```
+
+
 ```php
 <?php
 
@@ -94,10 +99,17 @@ Once the database is configured, publish the required migration and model files 
 php artisan erag:publish-permission
 ```
 
-This command will:
+This command will publish the required migrations:
 
-- Publish and run the required migrations.
-- Automatically run the seeder to set up roles and permissions in your database.
+```bash
+php artisan erag:publish-permission --migrate
+```
+
+If you want to run the published migrations and seed the datbase you cann add `--migrate` and `--seed` respectively. Then the command will automatically run the migrations and the seeder to set up roles and permissions in your database.
+
+```bash
+php artisan erag:publish-permission --migrate --seed
+```
 
 ## Step 6: Using Role-Based Permissions
 
@@ -112,7 +124,7 @@ if (auth()->user()->can('permission_name')) {
 You can also use the helper method:
 
 ```php
-if (hasPermissions('create-post')) {
+if (hasPermissions('post-create')) {
     dd('You are allowed to access');
 } else {
     dd('You are not allowed to access');
@@ -122,7 +134,7 @@ if (hasPermissions('create-post')) {
 OR
 
 ```php
-if (hasPermissions('create-post', 'post-edit')) {
+if (hasPermissions('post-create', 'post-edit')) {
     dd('You are allowed to access');
 } else {
     dd('You are not allowed to access');
@@ -156,11 +168,12 @@ getRoles();
 To protect routes based on roles and permissions, you can use the provided middleware. For example, to allow only users with the `user` role and `create-user` permission:
 
 ```php
-Route::group(['middleware' => ['role:user,create-user']], function () {
+
+Route::group(['middleware' => ['role:user,user-create']], function () {
     // Protected routes go here
 });
 
-Route::group(['middleware' => ['role:admin,create-post']], function () {
+Route::group(['middleware' => ['role:admin,post-create']], function () {
     // Protected routes go here
 });
 ```
@@ -184,7 +197,7 @@ You can also use Blade directives to display content based on the user's role:
 You can also use Blade directives to display content based on the user's permissions:
 
 ```php
-@permission('create-post')
+@permission('post-create')
     {{ __('You can create a post') }}
 @endpermission
 ```
@@ -222,8 +235,8 @@ class RolePermissionSeeder extends Seeder
     private function seedPermissions(): void
     {
         $permissions = [
-            'create-post',
-            'create-user',
+            'post-create',
+            'user-create',
         ];
 
         foreach ($permissions as $permissionName) {
@@ -234,8 +247,8 @@ class RolePermissionSeeder extends Seeder
     private function seedRoles(): void
     {
         $roles = [
-            'admin' => ['create-post', 'post-edit', 'post-delete', 'post-update'],
-            'user' => ['create-user', 'user-edit', 'user-delete', 'user-update'],
+            'admin' => ['post-create', 'post-edit', 'post-delete', 'post-update'],
+            'user' => ['user-create, 'user-edit', 'user-delete', 'user-update'],
         ];
 
         foreach ($roles as $roleName => $permissionNames) {
@@ -257,14 +270,15 @@ class RolePermissionSeeder extends Seeder
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin'),
                 'roles' => ['admin'],
-                'permissions' => ['create-post'],
+                'permissions' => ['post-create'],
             ],
             [
                 'name' => 'User',
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
-                'permissions' => ['create-user'],
+                'permissions' => ['user-create],
+                'permissions' => ['user-create'],
             ],
         ];
 

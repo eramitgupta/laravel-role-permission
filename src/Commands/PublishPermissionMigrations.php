@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class PublishPermissionMigrations extends Command
 {
-    protected $signature = 'erag:publish-permission';
+    protected $signature = 'erag:publish-permission {--migrate} {--seed}';
 
     protected $description = 'Publish the Permission and Role migration files and models';
 
@@ -24,13 +24,15 @@ class PublishPermissionMigrations extends Command
             '--force' => true,
         ]);
 
-        $this->info('Running migrations...');
-        $exitCode = $this->call('migrate', ['--force' => true]);
+        if ($this->option('migrate')) {
+            $this->info('Running migrations...');
+            $exitCode = $this->call('migrate', ['--force' => true]);
 
-        if ($exitCode === 0) {
-            $this->info('Migrations completed successfully.');
-        } else {
-            $this->error('Migration process encountered errors.');
+            if ($exitCode === 0) {
+                $this->info('Migrations completed successfully.');
+            } else {
+                $this->error('Migration process encountered errors.');
+            }
         }
 
         $this->info('Publishing seeder...');
@@ -39,21 +41,22 @@ class PublishPermissionMigrations extends Command
             '--force' => true,
         ]);
 
-        $this->info('Running seeder...');
-        try {
-            $exitCode = $this->call('db:seed', [
-                '--class' => 'RolePermissionSeeder',
-                '--force' => true,
-            ]);
+        if ($this->option('seed')) {
+            $this->info('Running seeder...');
+            try {
+                $exitCode = $this->call('db:seed', [
+                    '--class' => 'RolePermissionSeeder',
+                    '--force' => true,
+                ]);
 
-            if ($exitCode === 0) {
-                $this->info('Seeder completed successfully.');
-            } else {
-                $this->error('Seeder process encountered errors.');
+                if ($exitCode === 0) {
+                    $this->info('Seeder completed successfully.');
+                } else {
+                    $this->error('Seeder process encountered errors.');
+                }
+            } catch (\Exception $e) {
+                $this->error('Error running seeder: '.$e->getMessage());
             }
-        } catch (\Exception $e) {
-            $this->error('Error running seeder: '.$e->getMessage());
         }
-
     }
 }
