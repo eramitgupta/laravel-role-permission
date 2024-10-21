@@ -43,15 +43,18 @@ trait HasPermissionsTrait
         });
     }
 
-    public function hasPermissions(...$permissions): bool
+    public function hasPermissions($permissions)
     {
-        foreach ($permissions as $permission) {
-            if (! $this->hasPermissionTo($permission)) {
-                return false;
+        $permissions = explode('|', $permissions);
+        if (is_array($permissions)) {
+            foreach ($permissions as $permission) {
+                if (! $this->hasPermissionTo($permission)) {
+                    return false;
+                }
             }
+            return true;
         }
-
-        return true;
+        return false;
     }
 
     public function hasPermissionThroughRole($permission): bool
