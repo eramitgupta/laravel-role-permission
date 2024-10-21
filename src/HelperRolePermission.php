@@ -18,7 +18,7 @@ if (! function_exists('hasRole')) {
 }
 
 if (! function_exists('hasPermissions')) {
-    function hasPermissions($permission): bool
+    function hasPermissions(string $permission): bool
     {
         return auth()->user()->hasPermissions($permission);
     }

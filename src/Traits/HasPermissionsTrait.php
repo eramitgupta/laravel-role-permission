@@ -43,9 +43,9 @@ trait HasPermissionsTrait
         });
     }
 
-    public function hasPermissions($permissions)
+    public function hasPermissions(string $permissions): bool
     {
-        $permissions = explode('|', $permissions);
+        $permissions = preg_split('/[,|]/', $permissions);
         if (is_array($permissions)) {
             foreach ($permissions as $permission) {
                 if (! $this->hasPermissionTo($permission)) {
@@ -109,7 +109,6 @@ trait HasPermissionsTrait
     protected function getAllPermissions(array $permissions)
     {
         $permissionNames = array_map(fn ($permission) => is_object($permission) ? $permission->name : $permission, $permissions);
-
         return Permission::whereIn('name', $permissionNames)->with('roles')->get();
     }
 }
