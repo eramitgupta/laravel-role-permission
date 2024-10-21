@@ -8,7 +8,7 @@ use EragPermission\Models\Permission;
 use EragPermission\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash; // Import Carbon for handling dates
+use Illuminate\Support\Facades\Hash;
 
 class RolePermissionSeeder extends Seeder
 {

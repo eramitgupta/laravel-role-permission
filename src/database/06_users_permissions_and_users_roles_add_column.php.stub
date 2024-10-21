@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('roles', function (Blueprint $table) {
-            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('expires_at')->nullable()->after('name');
         });
 
         Schema::table('permissions', function (Blueprint $table) {
-            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('expires_at')->nullable()->after('name');
         });
     }
 
@@ -32,6 +32,5 @@ return new class extends Migration
         Schema::table('permissions', function (Blueprint $table) {
             $table->dropColumn('expires_at');
         });
-
     }
 };

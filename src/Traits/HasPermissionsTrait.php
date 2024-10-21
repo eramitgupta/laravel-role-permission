@@ -105,8 +105,8 @@ trait HasPermissionsTrait
 
     protected function getAllPermissions(array $permissions)
     {
-        $permissionNames = collect($permissions)->map(fn ($permission) => is_object($permission) ? $permission->name : $permission);
+        $permissionNames = array_map(fn ($permission) => is_object($permission) ? $permission->name : $permission, $permissions);
 
-        return Permission::whereIn('name', $permissionNames)->get();
+        return Permission::whereIn('name', $permissionNames)->with('roles')->get();
     }
 }
