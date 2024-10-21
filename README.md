@@ -130,7 +130,6 @@ if (hasPermissions('post-create')) {
     dd('You are not allowed to access');
 }
 ```
-
 OR
 
 ```php
