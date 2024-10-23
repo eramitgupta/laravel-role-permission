@@ -33,13 +33,29 @@ trait HasPermissionsTrait
         return $this->givePermissionsTo($permissions);
     }
 
-    public function hasPermissionTo(...$permissions): bool
+    public function hasPermissionTo(...$arrayPermissions): bool
     {
-        $permissions = $this->getAllPermissions($permissions);
+        $permissions = $this->getAllPermissions($arrayPermissions);
+
+        if ($permissions->isEmpty()) {
+            return false;
+        }
 
         return $permissions->every(function ($permission) {
             return $this->hasPermissionThroughRole($permission) && $this->hasPermission($permission);
         });
+    }
+
+    public function hasPermissions(string $permissions): bool
+    {
+        $arrayPermissions = array_map('trim', preg_split('/[,|]/', $permissions));
+        foreach ($arrayPermissions as $permission) {
+            if (! $this->hasPermissionTo($permission)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function hasPermissionThroughRole($permission): bool
@@ -73,6 +89,8 @@ trait HasPermissionsTrait
 
     protected function getAllPermissions(array $permissions)
     {
-        return Permission::whereIn('name', $permissions)->with('roles')->get();
+        $permissionNames = array_map(fn ($permission) => is_object($permission) ? $permission->name : $permission, $permissions);
+
+        return Permission::whereIn('name', $permissionNames)->with('roles')->get();
     }
 }

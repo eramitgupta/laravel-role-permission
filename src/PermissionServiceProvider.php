@@ -74,6 +74,15 @@ class PermissionServiceProvider extends ServiceProvider
         Blade::directive('endpermission', function () {
             return '<?php endif; ?>';
         });
+
+        Blade::directive('hasPermissions', function ($permission) {
+            return "<?php if(auth()->check() && auth()->user()->hasPermissions({$permission})) : ?>";
+        });
+
+        Blade::directive('endhasPermissions', function () {
+            return '<?php endif; ?>';
+        });
+
     }
 
     protected function ModelBindings()
