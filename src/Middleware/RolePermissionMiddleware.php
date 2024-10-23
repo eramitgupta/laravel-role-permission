@@ -15,7 +15,6 @@ class RolePermissionMiddleware
      */
     public function handle(Request $request, Closure $next, $role = null, $permission = null): Response
     {
-        // Check if the user is authenticated
         if (! $request->user()) {
             abort(403, 'Unauthorized action.');
         }
@@ -23,7 +22,7 @@ class RolePermissionMiddleware
         if (! $request->user()->hasRole($role)) {
             abort(404, 'Unauthorized action.');
         }
-        if ($permission !== null && ! $request->user()->can($permission)) {
+        if ($permission !== null && ! $request->user()->hasPermissions($permission)) {
             abort(404, 'Unauthorized action.');
         }
 

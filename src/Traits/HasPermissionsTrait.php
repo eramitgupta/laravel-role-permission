@@ -34,9 +34,13 @@ trait HasPermissionsTrait
         return $this->givePermissionsTo($permissions);
     }
 
-    public function hasPermissionTo(...$permissions): bool
+    public function hasPermissionTo(...$arrayPermissions): bool
     {
-        $permissions = $this->getAllPermissions($permissions);
+        $permissions = $this->getAllPermissions($arrayPermissions);
+
+        if ($permissions->isEmpty()) {
+            return false;
+        }
 
         return $permissions->isNotEmpty() && $permissions->every(function ($permission) {
             return $this->hasPermissionThroughRole($permission) && $this->hasValidPermission($permission);

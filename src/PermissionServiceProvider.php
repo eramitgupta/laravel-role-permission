@@ -88,6 +88,7 @@ class PermissionServiceProvider extends ServiceProvider
         Blade::directive('endhasPermissions', function () {
             return '<?php endif; ?>';
         });
+
     }
 
     protected function ModelBindings(): void
