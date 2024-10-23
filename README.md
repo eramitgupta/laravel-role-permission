@@ -267,7 +267,7 @@ class RolePermissionSeeder extends Seeder
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
-                'permissions' => ['user-create],
+                'permissions' => ['user-create'],
                 'permissions' => ['user-create'],
             ],
         ];
