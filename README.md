@@ -30,7 +30,6 @@ Before configuring the database and publishing the role-permission files, add th
 HasPermissionsTrait
 ```
 
-
 ```php
 <?php
 
@@ -130,6 +129,21 @@ if (hasPermissions('post-create')) {
     dd('You are not allowed to access');
 }
 ```
+OR
+
+```php
+if (hasPermissions('post-create|post-edit')) {
+    dd('You are allowed to access');
+} else {
+    dd('You are not allowed to access');
+}
+
+if (hasPermissions('post-create,post-edit')) {
+    dd('You are allowed to access');
+} else {
+    dd('You are not allowed to access');
+}
+```
 
 To get all permissions:
 
@@ -172,7 +186,7 @@ Route::group(['middleware' => ['role:admin,post-create']], function () {
 
 You can also use Blade directives to display content based on the user's role:
 
-```php
+```blade
 @role('admin')
     {{ __('You are an admin') }}
 @endrole
@@ -186,10 +200,21 @@ You can also use Blade directives to display content based on the user's role:
 
 You can also use Blade directives to display content based on the user's permissions:
 
-```php
-@permission('post-create')
+```blade
+@hasPermissions('post-create')
     {{ __('You can create a post') }}
-@endpermission
+@endhasPermissions
+```
+OR
+
+```blade
+@hasPermissions('post-create|post-edit')
+    {{ __('You can create a post') }}
+@endhasPermissions
+
+@hasPermissions('post-create,post-edit')
+    {{ __('You can create a post') }}
+@endhasPermissions
 ```
 
 ## Example Seeder for Roles and Permissions
@@ -238,7 +263,7 @@ class RolePermissionSeeder extends Seeder
     {
         $roles = [
             'admin' => ['post-create', 'post-edit', 'post-delete', 'post-update'],
-            'user' => ['user-create, 'user-edit', 'user-delete', 'user-update'],
+            'user' => ['user-create', 'user-edit', 'user-delete', 'user-update'],
         ];
 
         foreach ($roles as $roleName => $permissionNames) {
@@ -260,15 +285,14 @@ class RolePermissionSeeder extends Seeder
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin'),
                 'roles' => ['admin'],
-                'permissions' => ['post-create'],
+                'permissions' => ['post-create', 'post-edit'],
             ],
             [
                 'name' => 'User',
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
-                'permissions' => ['user-create'],
-                'permissions' => ['user-create'],
+                'permissions' => ['user-create', 'user-edit'],
             ],
         ];
 
