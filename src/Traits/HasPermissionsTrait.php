@@ -45,16 +45,14 @@ trait HasPermissionsTrait
 
     public function hasPermissions(string $permissions): bool
     {
-        $permissions = preg_split('/[,|]/', $permissions);
-        if (is_array($permissions)) {
-            foreach ($permissions as $permission) {
-                if (! $this->hasPermissionTo($permission)) {
-                    return false;
-                }
+        $arrayPermissions = array_map('trim', preg_split('/[,|]/', $permissions));
+        foreach ($arrayPermissions as $permission) {
+            if (! $this->hasPermissionTo($permission)) {
+                return false;
             }
-            return true;
         }
-        return false;
+
+        return true;
     }
 
     public function hasPermissionThroughRole($permission): bool
@@ -109,6 +107,7 @@ trait HasPermissionsTrait
     protected function getAllPermissions(array $permissions)
     {
         $permissionNames = array_map(fn ($permission) => is_object($permission) ? $permission->name : $permission, $permissions);
+
         return Permission::whereIn('name', $permissionNames)->with('roles')->get();
     }
 }
