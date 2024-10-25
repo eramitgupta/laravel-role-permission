@@ -13,21 +13,21 @@
 if (! function_exists('hasRole')) {
     function hasRole($role): bool
     {
-        return auth()->user()->hasRole($role);
+        return auth()->check() && auth()->user()->hasRole($role);
     }
 }
 
 if (! function_exists('hasPermissions')) {
     function hasPermissions(string $permission): bool
     {
-        return auth()->user()->hasPermissions($permission);
+        return auth()->check() && auth()->user()->hasPermissions($permission);
     }
 }
 
 if (! function_exists('getPermissions')) {
     function getPermissions(): array
     {
-        return auth()->user()
+        return auth()->check()
             ? auth()->user()?->roles->flatMap(fn ($role) => $role?->permissions?->pluck('name'))
                 ->unique()->values()->toArray()
             : [];
@@ -37,7 +37,7 @@ if (! function_exists('getPermissions')) {
 if (! function_exists('getRoles')) {
     function getRoles(): array
     {
-        return auth()->user()
+        return auth()->check()
             ? auth()->user()?->roles->pluck('name')->unique()->values()->toArray()
             : [];
     }
