@@ -13,13 +13,12 @@
 </div>
 
 
-```markdown
 ## Laravel Version Support
 
 | Laravel Version | 11.x                  | 10.x                  | 9.x                   | < 9.x               |
 |-----------------|-----------------------|-----------------------|-----------------------|---------------------|
 | Supported       | :white_check_mark:    | :white_check_mark:    | :white_check_mark:    | :x:                |
-```
+
 
 ## Getting Started
 
