@@ -33,6 +33,7 @@ class PermissionServiceProvider extends ServiceProvider
             __DIR__.'/database/03_create_users_permissions_table.php.stub' => database_path('migrations/0003_create_users_permissions_table.php'),
             __DIR__.'/database/04_users_roles.php.stub' => database_path('migrations/0004_users_roles.php'),
             __DIR__.'/database/05_create_roles_permissions_table.php.stub' => database_path('migrations/0005_create_roles_permissions_table.php'),
+            __DIR__.'/database/06_users_permissions_add_column.php.stub' => database_path('migrations/migrations/06_users_permissions_add_column.php'),
 
         ], 'erag:publish-permission-migrations');
 
