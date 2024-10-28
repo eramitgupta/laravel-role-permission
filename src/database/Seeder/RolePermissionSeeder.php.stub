@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use EragPermission\Models\Role;
+use Carbon\Carbon;
 use EragPermission\Models\Permission;
+use EragPermission\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,53 +17,32 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Start a transaction to ensure data integrity
         DB::transaction(function () {
-            $this->seedPermissions();
-            $this->seedRoles();
+            $this->seedRolePermissions();
             $this->seedUsers();
         });
     }
 
     /**
-     * Seed permissions.
+     * Seed role permissions.
      */
-    private function seedPermissions(): void
+    private function seedRolePermissions(): void
     {
-        $permissions = [
-            'post-create',
-            'user-create',
-        ];
-
-        foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate(['name' => $permissionName]);
-        }
-    }
-
-    /**
-     * Seed roles and their permissions.
-     */
-    private function seedRoles(): void
-    {
-        $roles = [
+        $rolePermission = [
             'admin' => ['post-create', 'post-edit', 'post-delete', 'post-update'],
             'user' => ['user-create', 'user-edit', 'user-delete', 'user-update'],
         ];
 
-        foreach ($roles as $roleName => $permissionNames) {
-            $role = Role::firstOrCreate(['name' => $roleName]);
-
-            foreach ($permissionNames as $permissionName) {
-                $permission = Permission::firstOrCreate(['name' => $permissionName]);
-                $role->permissions()->syncWithoutDetaching($permission);
-                $permission->roles()->syncWithoutDetaching($role);
+        foreach ($rolePermission as $role => $permissions) {
+            $role = Role::create(['name' => $role]);
+            foreach ($permissions as $permission) {
+                $permission = Permission::create(['name' => $permission]);
+                $role->permissions()->attach($permission);
             }
         }
+
     }
 
-    /**
-     * Seed users and assign roles and permissions.
-     */
     private function seedUsers(): void
     {
         $users = [
@@ -71,14 +51,20 @@ class RolePermissionSeeder extends Seeder
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin'),
                 'roles' => ['admin'],
-                'permissions' => ['post-create', 'post-edit'],
+                'permissions' => [
+                    'post-create' => Carbon::now()->addDays(30),
+                    'post-edit' => Carbon::now()->addMinutes(60),
+                ],
             ],
             [
                 'name' => 'User',
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
-                'permissions' => ['user-create', 'user-edit'],
+                'permissions' => [
+                    'user-create' => Carbon::now()->addDays(30),
+                    'user-edit' => null,
+                ],
             ],
         ];
 
@@ -91,19 +77,10 @@ class RolePermissionSeeder extends Seeder
                 ]
             );
 
-            foreach ($userData['roles'] as $roleName) {
-                $role = Role::where('name', $roleName)->first();
-                if ($role) {
-                    $user->roles()->syncWithoutDetaching($role);
-                }
-            }
-
-            foreach ($userData['permissions'] as $permissionName) {
-                $permission = Permission::where('name', $permissionName)->first();
-                if ($permission) {
-                    $user->permissions()->syncWithoutDetaching($permission);
-                }
-            }
+            $user->assignRole($userData['roles']);
+            $permissionsWithExpiry = $userData['permissions'];
+            $user->givePermissionsTo(array_keys($permissionsWithExpiry), $permissionsWithExpiry);
+            // $user->givePermissionsTo(array_keys($permissionsWithExpiry), Carbon::now()->addDays(30));
         }
     }
 }

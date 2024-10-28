@@ -2,23 +2,40 @@
 
 namespace EragPermission\Traits;
 
+use Carbon\Carbon;
 use EragPermission\Models\Permission;
 use EragPermission\Models\Role;
+use EragPermission\Services\CoreUtility;
 
 trait HasPermissionsTrait
 {
-    public function givePermissionsTo(...$permissions)
+    public function givePermissionsTo(array $permissions, string|array|null $expiresAt = null): static
     {
+        if (empty($expiresAt)) {
+            $expiresAt = null;
+        }
+
         $permissions = $this->getAllPermissions($permissions);
-        if ($permissions === null) {
+        if ($permissions->isEmpty()) {
             return $this;
         }
-        $this->permissions()->saveMany($permissions);
+
+        $syncData = $permissions->mapWithKeys(function ($permission) use ($expiresAt) {
+            if (is_array($expiresAt)) {
+                $expiration = $expiresAt[$permission->name] ?? $expiresAt[$permission->id] ?? null;
+            } else {
+                $expiration = $expiresAt;
+            }
+
+            return [$permission->id => ['expires_at' => $expiration]];
+        })->toArray();
+
+        $this->permissions()->syncWithoutDetaching($syncData);
 
         return $this;
     }
 
-    public function withdrawPermissionsTo(...$permissions)
+    public function withdrawPermissionsTo(...$permissions): static
     {
         $permissions = $this->getAllPermissions($permissions);
         $this->permissions()->detach($permissions);
@@ -26,11 +43,26 @@ trait HasPermissionsTrait
         return $this;
     }
 
-    public function refreshPermissions(...$permissions)
+    public function assignRole(string|array $roles): static
     {
-        $this->permissions()->detach();
+        $rolesArray = CoreUtility::stringArray($roles);
+        $rolesCollection = $this->getAllRoles($rolesArray);
 
-        return $this->givePermissionsTo($permissions);
+        if ($rolesCollection->isEmpty()) {
+            return $this;
+        }
+        $this->roles()->syncWithoutDetaching($rolesCollection);
+
+        return $this;
+    }
+
+    protected function getAllRoles(array $roles)
+    {
+        $roleNames = collect($roles)->map(function ($role) {
+            return is_object($role) ? $role->name : $role;
+        });
+
+        return Role::whereIn('name', $roleNames)->get();
     }
 
     public function hasPermissionTo(...$arrayPermissions): bool
@@ -46,9 +78,9 @@ trait HasPermissionsTrait
         });
     }
 
-    public function hasPermissions(string $permissions): bool
+    public function hasPermissions(string|array $permissions): bool
     {
-        $arrayPermissions = array_map('trim', preg_split('/[,|]/', $permissions));
+        $arrayPermissions = CoreUtility::stringArray($permissions);
         foreach ($arrayPermissions as $permission) {
             if (! $this->hasPermissionTo($permission)) {
                 return false;
@@ -79,12 +111,22 @@ trait HasPermissionsTrait
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'users_permissions');
+        return $this->belongsToMany(Permission::class, 'users_permissions')->withPivot('expires_at');
     }
 
     protected function hasPermission($permission): bool
     {
-        return (bool) $this->permissions->where('name', $permission->name)->count();
+        $permissionRecord = $this->permissions()->where('name', $permission->name)->first();
+
+        if (! $permissionRecord) {
+            return false;
+        }
+
+        if ($permissionRecord->pivot->expires_at !== null) {
+            return Carbon::now()->lt($permissionRecord->pivot->expires_at);
+        }
+
+        return true;
     }
 
     protected function getAllPermissions(array $permissions)
