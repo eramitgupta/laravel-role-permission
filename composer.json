@@ -37,11 +37,6 @@
             "EragPermission\\": "src/"
         }
     },
-    "scripts": {
-        "post-update-cmd": [
-            "@php artisan erag:upgrade-version"
-        ]
-    },
     "prefer-stable": true,
     "extra": {
         "laravel": {
