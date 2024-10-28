@@ -3,6 +3,7 @@
 namespace EragPermission;
 
 use EragPermission\Commands\PublishPermissionMigrations;
+use EragPermission\Commands\UpgradeVersions;
 use EragPermission\Contracts\PermissionContract;
 use EragPermission\Contracts\RoleContract;
 use EragPermission\Middleware\RolePermissionMiddleware;
@@ -23,6 +24,7 @@ class PermissionServiceProvider extends ServiceProvider
     {
         $this->commands([
             PublishPermissionMigrations::class,
+            UpgradeVersions::class,
         ]);
 
         $this->publishes([
