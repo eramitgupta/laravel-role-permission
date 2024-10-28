@@ -1,6 +1,5 @@
 # Laravel Role-Permission
 
-
 <center>
 <img width="956" alt="Screenshot 2024-10-04 at 10 34 23 PM" src="https://github.com/user-attachments/assets/e78bffcf-6665-464b-a9a1-f6d8c72a9301">
 </center>
@@ -14,10 +13,17 @@
 </div>
 
 
-This package provides an effortless way to manage roles and permissions in your Laravel application. With automatic database configuration, one-command publishing, and easy integration, you can quickly set up robust role-based access control without hassle.
+```markdown
+## Laravel Version Support
+
+| Laravel Version | 11.x                  | 10.x                  | 9.x                   | < 9.x               |
+|-----------------|-----------------------|-----------------------|-----------------------|---------------------|
+| Supported       | :white_check_mark:    | :white_check_mark:    | :white_check_mark:    | :x:                |
+```
 
 ## Getting Started
 
+Install the package via Composer
 ```bash
 composer require erag/laravel-role-permission
 ```
@@ -62,11 +68,7 @@ DB_PASSWORD=your_database_password
 
 Make sure to replace `your_database_name`, `your_database_user`, and `your_database_password` with your actual database credentials.
 
-## Step 3: Automatic Database Setup
-
-After configuring your database connection, the package will automatically set up your database by running the necessary migrations and seeders without any additional setup.
-
-## Step 4: Register the Service Provider
+## Step 3: Register the Service Provider
 
 ### For Laravel v11.x
 
@@ -79,7 +81,7 @@ return [
 ];
 ```
 
-### For Laravel v10.x
+### For Laravel v8.x, v9.x, v10.x
 
 Ensure the service provider is registered in your `config/app.php` file:
 
@@ -90,38 +92,36 @@ Ensure the service provider is registered in your `config/app.php` file:
 ],
 ```
 
-## Step 5: Publish Role-Permission Files
+## Step 4: Publish Role-Permission Files
 
-Once the database is configured, publish the required migration and model files with a single command:
+Once the database is configured, publish the required migration with a single command:
 
 ```bash
 php artisan erag:publish-permission
 ```
 
-This command will publish the required migrations:
+You can also run migrations and seeders:
 
 ```bash
 php artisan erag:publish-permission --migrate
 ```
-
-If you want to run the published migrations and seed the datbase you cann add `--migrate` and `--seed` respectively. Then the command will automatically run the migrations and the seeder to set up roles and permissions in your database.
+Or both
 
 ```bash
 php artisan erag:publish-permission --migrate --seed
 ```
 
-## Step 6: Using Role-Based Permissions
-
-You can now easily check user permissions within your application logic:
+## Upgrade New Version Command
+To upgrade the package to a new version:
 
 ```php
-if (auth()->user()->can('permission_name')) {
-    // The user has the specified permission
-}
+php artisan erag:upgrade-version 
 ```
 
-You can also use the helper method:
+## Step 5: Using Role-Based Permissions
 
+You can now easily check user permissions within your application logic:
+You can also use the helper method:
 ```php
 if (hasPermissions('post-create')) {
     dd('You are allowed to access');
@@ -145,10 +145,14 @@ if (hasPermissions('post-create,post-edit')) {
 }
 ```
 
-To get all permissions:
+Retrieve Permissions and Roles
 
 ```php
 getPermissions();
+```
+
+```php
+getRoles();
 ```
 
 ### Using Role-Based Checks
@@ -159,12 +163,6 @@ if (hasRole('admin')) {
 } else {
     dd('You are not allowed to access');
 }
-```
-
-To get all roles:
-
-```php
-getRoles();
 ```
 
 ## Step 7: Protecting Routes with Middleware
@@ -217,6 +215,61 @@ OR
 @endhasPermissions
 ```
 
+## How to Use Permissions Expiration 
+The permission expiration feature allows you to set temporary access that expires automatically after a certain period or, by setting the expiration date to null, to allow unlimited access. This feature is useful for setting up both temporary and permanent permissions.
+
+### Adding Permissions with Expiration
+
+
+1. **Assign Permission with Expiration**: Use the `givePermissionsTo` method to assign a permission with an expiration date.
+
+   ```php
+   // Assign a permission with a specific expiration date
+   $user->givePermissionsTo(['post-create', 'post-edit'], 
+       Carbon::now()->addDays(30), // Each Permission expiration assign in 30 days
+   );
+   ```
+
+   In this example, the `post-create` permission will be assigned to the user and expire after 30 days.
+
+2. **Assign Multiple Permissions with Different Expirations**: If you need to assign multiple permissions with individual expiration dates, pass an associative array where the keys are permission names, and the values are the expiration dates.
+
+   ```php
+   $user->givePermissionsTo(['post-create', 'post-edit'], 
+   [
+      Carbon::now()->addDays(10), // Expires in 10 days
+      Carbon::now()->addHours(6),   // Expires in 6 hours
+   ]);
+   ```
+
+
+## How to Use without Permissions Expiration
+
+
+1**Assign Permission with Unlimited Duration**: Assign permissions without an expiration by setting the expiration to `null`. This will give the user unlimited access to the permission.
+
+
+ ```php
+// Assign a permission with a specific expiration date
+$user->givePermissionsTo(['post-create'], 
+   null, // [] Array or String 
+);
+```
+OR
+
+```php
+$user->givePermissionsTo(['post-create', 'post-edit']);
+```
+
+
+### Checking for Expired Permissions OR without Permissions Expiration
+
+Each permission will be stored with its own expiration time, allowing for granular control over each access level.
+
+
+The package automatically checks for expiration when evaluating a user’s permissions. You can use the `hasRole`, `@role` OR `hasPermissions`, `@hasPermissions` helper methods to check if a permission is still active:
+
+
 ## Example Seeder for Roles and Permissions
 
 Here's an example `RolePermissionSeeder` that seeds roles, permissions, and users:
@@ -227,8 +280,9 @@ Here's an example `RolePermissionSeeder` that seeds roles, permissions, and user
 namespace Database\Seeders;
 
 use App\Models\User;
-use EragPermission\Models\Role;
+use Carbon\Carbon;
 use EragPermission\Models\Permission;
+use EragPermission\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -241,40 +295,29 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
-            $this->seedPermissions();
-            $this->seedRoles();
+            $this->seedRolePermissions();
             $this->seedUsers();
         });
     }
 
-    private function seedPermissions(): void
+    /**
+     * Seed role permissions.
+     */
+    private function seedRolePermissions(): void
     {
-        $permissions = [
-            'post-create',
-            'user-create',
-        ];
-
-        foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate(['name' => $permissionName]);
-        }
-    }
-
-    private function seedRoles(): void
-    {
-        $roles = [
+        $rolePermission = [
             'admin' => ['post-create', 'post-edit', 'post-delete', 'post-update'],
             'user' => ['user-create', 'user-edit', 'user-delete', 'user-update'],
         ];
 
-        foreach ($roles as $roleName => $permissionNames) {
-            $role = Role::firstOrCreate(['name' => $roleName]);
-
-            foreach ($permissionNames as $permissionName) {
-                $permission = Permission::firstOrCreate(['name' => $permissionName]);
-                $role->permissions()->syncWithoutDetaching($permission);
-                $permission->roles()->syncWithoutDetaching($role);
+        foreach ($rolePermission as $role => $permissions) {
+            $role = Role::create(['name' => $role]);
+            foreach ($permissions as $permission) {
+                $permission = Permission::create(['name' => $permission]);
+                $role->permissions()->attach($permission);
             }
         }
+
     }
 
     private function seedUsers(): void
@@ -285,14 +328,20 @@ class RolePermissionSeeder extends Seeder
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin'),
                 'roles' => ['admin'],
-                'permissions' => ['post-create', 'post-edit'],
+                'permissions' => [
+                    'post-create' => Carbon::now()->addDays(30),
+                    'post-edit' => Carbon::now()->addMinutes(60),
+                ],
             ],
             [
                 'name' => 'User',
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('user'),
                 'roles' => ['user'],
-                'permissions' => ['user-create', 'user-edit'],
+                'permissions' => [
+                    'user-create' => Carbon::now()->addDays(30),
+                    'user-edit' => null,
+                ],
             ],
         ];
 
@@ -305,19 +354,10 @@ class RolePermissionSeeder extends Seeder
                 ]
             );
 
-            foreach ($userData['roles'] as $roleName) {
-                $role = Role::where('name', $roleName)->first();
-                if ($role) {
-                    $user->roles()->syncWithoutDetaching($role);
-                }
-            }
-
-            foreach ($userData['permissions'] as $permissionName) {
-                $permission = Permission::where('name', $permissionName)->first();
-                if ($permission) {
-                    $user->permissions()->syncWithoutDetaching($permission);
-                }
-            }
+            $user->assignRole($userData['roles']);
+            $permissionsWithExpiry = $userData['permissions'];
+            $user->givePermissionsTo(array_keys($permissionsWithExpiry), $permissionsWithExpiry);
+            // $user->givePermissionsTo(array_keys($permissionsWithExpiry), Carbon::now()->addDays(30));
         }
     }
 }
