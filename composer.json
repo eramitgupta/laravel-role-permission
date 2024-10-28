@@ -12,7 +12,8 @@
         "security",
         "access control",
         "laravel role permissions",
-        "easy role permission laravel"
+        "easy role permission laravel",
+        "erag"
     ],
     "authors": [
         {
@@ -22,7 +23,10 @@
     ],
     "homepage": "https://github.com/eramitgupta/laravel-role-permission",
     "require": {
-        "php": ">=8.0.0",
+        "php": "^8.0",
+        "illuminate/auth": "^8.12|^9.0|^10.0|^11.0",
+        "illuminate/container": "^8.12|^9.0|^10.0|^11.0",
+        "illuminate/contracts": "^8.12|^9.0|^10.0|^11.0",
         "illuminate/database": "^8.12|^9.0|^10.0|^11.0"
     },
     "autoload": {
@@ -32,6 +36,11 @@
         "psr-4": {
             "EragPermission\\": "src/"
         }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan erag:upgrade-version"
+        ]
     },
     "prefer-stable": true,
     "extra": {
