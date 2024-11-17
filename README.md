@@ -214,24 +214,24 @@ The permission expiration feature allows you to set temporary access that expire
 
 1. **Assign Permission with Expiration**: Use the `givePermissionsTo` method to assign a permission with an expiration date.
 
-   ```php
-   // Assign a permission with a specific expiration date
-   $user->givePermissionsTo(['post-create', 'post-edit'], 
-       Carbon::now()->addDays(30), // Each Permission expiration assign in 30 days
-   );
-   ```
+```php
+// Assign a permission with a specific expiration date
+$user->givePermissionsTo(['post-create', 'post-edit'], 
+   Carbon::now()->addDays(30), // Each Permission expiration assign in 30 days
+);
+```
 
-   In this example, the `post-create` permission will be assigned to the user and expire after 30 days.
+In this example, the `post-create` permission will be assigned to the user and expire after 30 days.
 
 2. **Assign Multiple Permissions with Different Expirations**: If you need to assign multiple permissions with individual expiration dates, pass an associative array where the keys are permission names, and the values are the expiration dates.
 
-   ```php
-   $user->givePermissionsTo(['post-create', 'post-edit'], 
-   [
-      Carbon::now()->addDays(10), // Expires in 10 days
-      Carbon::now()->addHours(6),   // Expires in 6 hours
-   ]);
-   ```
+```php
+$user->givePermissionsTo(['post-create', 'post-edit'], 
+[
+  Carbon::now()->addDays(10), // Expires in 10 days
+  Carbon::now()->addHours(6),   // Expires in 6 hours
+]);
+```
 
 
 ## How to Use without Permissions Expiration
@@ -252,6 +252,31 @@ OR
 $user->givePermissionsTo(['post-create', 'post-edit']);
 ```
 
+## Detach Permissions from a User
+
+The `detachPermissions` method allows you to remove one or multiple permissions from a user. You can specify permissions as an array, a pipe-separated string, a comma-separated string, or a single permission name.
+
+### Example Usage
+
+```php
+$user = auth()->user();
+
+// Detach multiple permissions using an array
+$user->detachPermissions(['post-create', 'post-edit']);
+
+// Detach multiple permissions using a pipe-separated string
+$user->detachPermissions('post-create|post-edit');
+
+// Detach multiple permissions using a comma-separated string
+$user->detachPermissions('post-create,post-edit');
+
+// Detach a single permission
+$user->detachPermissions('post-create');
+```
+
+### Notes
+- Ensure that the permissions you are detaching exist and are assigned to the user.
+- This method is flexible and accepts different formats for specifying permissions.
 
 ### Checking for Expired Permissions OR without Permissions Expiration
 
