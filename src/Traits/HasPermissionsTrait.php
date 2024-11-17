@@ -35,10 +35,12 @@ trait HasPermissionsTrait
         return $this;
     }
 
-    public function withdrawPermissionsTo(...$permissions): static
+    public function detachPermissions(string|array $permissions): static
     {
-        $permissions = $this->getAllPermissions($permissions);
-        $this->permissions()->detach($permissions);
+        $arrayPermissions = CoreUtility::stringArray($permissions);
+
+        $getPermissions = $this->getAllPermissions($arrayPermissions);
+        $this->permissions()->detach($getPermissions);
 
         return $this;
     }

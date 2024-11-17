@@ -88,7 +88,7 @@ class PermissionServiceProvider extends ServiceProvider
 
     }
 
-    protected function ModelBindings()
+    protected function ModelBindings(): void
     {
         $this->app->bind(RoleContract::class, function ($app) {
             return new Role;
