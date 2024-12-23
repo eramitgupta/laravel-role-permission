@@ -1,7 +1,7 @@
 # Laravel Role-Permission
 
 <center>
-<img width="956" alt="Screenshot 2024-10-04 at 10 34 23 PM" src="https://github.com/user-attachments/assets/e78bffcf-6665-464b-a9a1-f6d8c72a9301">
+<img width="956" alt="Screenshot 2024-10-04 at 10 34 23 PM" src="https://github.com/user-attachments/assets/e78bffcf-6665-464b-a9a1-f6d8c72a9301">
 </center>
 
 <div align="center">
@@ -110,7 +110,84 @@ To upgrade the package to a new version:
 php artisan erag:upgrade-version 
 ```
 
-## Step 5: Using Role-Based Permissions
+## Available Functions Documentation
+
+### Permission Management
+
+#### `givePermissionsTo(array $permissions, string|array|null $expiresAt = null): static`
+Assigns permissions to a user with optional expiration dates.
+- `$permissions`: Array of permission names or objects
+- `$expiresAt`: Can be null (no expiration), a string date, or array of dates mapped to permission names
+
+```php
+// Single expiration for all permissions
+$user->givePermissionsTo(['post-create', 'post-edit'], Carbon::now()->addDays(30));
+
+// Different expirations per permission
+$user->givePermissionsTo(['post-create', 'post-edit'], [
+    'post-create' => Carbon::now()->addDays(10),
+    'post-edit' => Carbon::now()->addHours(6)
+]);
+
+// No expiration
+$user->givePermissionsTo(['post-create']);
+```
+
+#### `detachPermissions(string|array $permissions): static`
+Removes specified permissions from a user.
+```php
+// Multiple formats supported:
+$user->detachPermissions(['post-create', 'post-edit']); // Array
+$user->detachPermissions('post-create|post-edit');      // Pipe-separated
+$user->detachPermissions('post-create,post-edit');      // Comma-separated
+$user->detachPermissions('post-create');                // Single permission
+```
+
+#### `hasPermissionTo(...$permissions): bool`
+Checks if user has specific permissions through roles or direct assignment.
+```php
+if ($user->hasPermissionTo('post-create', 'post-edit')) {
+    // User has both permissions
+}
+```
+
+#### `hasPermissions(string|array $permissions): bool`
+Verifies user has all specified permissions.
+```php
+if ($user->hasPermissions(['post-create', 'post-edit'])) {
+    // User has all permissions
+}
+```
+
+### Role Management
+
+#### `assignRole(string|array $roles): static`
+Assigns roles to a user.
+```php
+$user->assignRole('admin');
+$user->assignRole(['admin', 'editor']);
+```
+
+#### `hasRole(...$roles): bool`
+Checks if user has any of the specified roles.
+```php
+if ($user->hasRole('admin', 'editor')) {
+    // User has at least one of these roles
+}
+```
+
+### Helper Methods
+
+#### `hasPermissionThroughRole($permission): bool`
+Checks if user has permission through assigned roles.
+
+#### `roles()`
+Relationship method for user roles.
+
+#### `permissions()`
+Relationship method for user permissions.
+
+## Using Role-Based Permissions
 
 You can now easily check user permissions within your application logic:
 You can also use the helper method:
@@ -137,7 +214,7 @@ if (hasPermissions('post-create,post-edit')) {
 }
 ```
 
-Retrieve Permissions and Roles
+### Retrieve Permissions and Roles
 
 ```php
 getPermissions();
@@ -157,61 +234,34 @@ if (hasRole('admin')) {
 }
 ```
 
-## Step 7: Protecting Routes with Middleware
-
-To protect routes based on roles and permissions, you can use the provided middleware. For example, to allow only users with the `user` role and `create-user` permission:
-
-```php
-
-Route::group(['middleware' => ['role:user,user-create']], function () {
-    // Protected routes go here
-});
-
-Route::group(['middleware' => ['role:admin,post-create']], function () {
-    // Protected routes go here
-});
-```
-
-## Step 8: Displaying Content Based on Roles
-
-You can also use Blade directives to display content based on the user's role:
+## Blade Directives
 
 ```blade
 @role('admin')
-    {{ __('You are an admin') }}
+    <!-- Content for admins -->
 @endrole
 
-@role('user')
-    {{ __('You are a user') }}
-@endrole
-```
-
-## Step 9: Displaying Content Based on Permissions
-
-You can also use Blade directives to display content based on the user's permissions:
-
-```blade
 @hasPermissions('post-create')
-    {{ __('You can create a post') }}
+    <!-- Content for users with post-create permission -->
 @endhasPermissions
-```
-OR
 
-```blade
 @hasPermissions('post-create|post-edit')
-    {{ __('You can create a post') }}
-@endhasPermissions
-
-@hasPermissions('post-create,post-edit')
-    {{ __('You can create a post') }}
+    <!-- Content for users with either permission -->
 @endhasPermissions
 ```
 
-## How to Use Permissions Expiration 
+## Middleware Usage
+
+```php
+Route::group(['middleware' => ['role:admin,post-create']], function () {
+    // Routes protected by role and permission
+});
+```
+
+## How to Use Permissions Expiration
 The permission expiration feature allows you to set temporary access that expires automatically after a certain period or, by setting the expiration date to null, to allow unlimited access. This feature is useful for setting up both temporary and permanent permissions.
 
 ### Adding Permissions with Expiration
-
 
 1. **Assign Permission with Expiration**: Use the `givePermissionsTo` method to assign a permission with an expiration date.
 
@@ -234,14 +284,11 @@ $user->givePermissionsTo(['post-create', 'post-edit'],
 ]);
 ```
 
-
 ## How to Use without Permissions Expiration
 
+1. **Assign Permission with Unlimited Duration**: Assign permissions without an expiration by setting the expiration to `null`. This will give the user unlimited access to the permission.
 
-1**Assign Permission with Unlimited Duration**: Assign permissions without an expiration by setting the expiration to `null`. This will give the user unlimited access to the permission.
-
-
- ```php
+```php
 // Assign a permission with a specific expiration date
 $user->givePermissionsTo(['post-create'], 
    null, // [] Array or String 
@@ -252,40 +299,6 @@ OR
 ```php
 $user->givePermissionsTo(['post-create', 'post-edit']);
 ```
-
-## Detach Permissions from a User
-
-The `detachPermissions` method allows you to remove one or multiple permissions from a user. You can specify permissions as an array, a pipe-separated string, a comma-separated string, or a single permission name.
-
-### Example Usage
-
-```php
-$user = auth()->user();
-
-// Detach multiple permissions using an array
-$user->detachPermissions(['post-create', 'post-edit']);
-
-// Detach multiple permissions using a pipe-separated string
-$user->detachPermissions('post-create|post-edit');
-
-// Detach multiple permissions using a comma-separated string
-$user->detachPermissions('post-create,post-edit');
-
-// Detach a single permission
-$user->detachPermissions('post-create');
-```
-
-### Notes
-- Ensure that the permissions you are detaching exist and are assigned to the user.
-- This method is flexible and accepts different formats for specifying permissions.
-
-### Checking for Expired Permissions OR without Permissions Expiration
-
-Each permission will be stored with its own expiration time, allowing for granular control over each access level.
-
-
-The package automatically checks for expiration when evaluating a user’s permissions. You can use the `hasRole`, `@role` OR `hasPermissions`, `@hasPermissions` helper methods to check if a permission is still active:
-
 
 ## Example Seeder for Roles and Permissions
 
@@ -334,7 +347,6 @@ class RolePermissionSeeder extends Seeder
                 $role->permissions()->attach($permission);
             }
         }
-
     }
 
     private function seedUsers(): void
