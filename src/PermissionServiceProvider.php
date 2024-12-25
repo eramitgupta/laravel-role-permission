@@ -6,6 +6,7 @@ use EragPermission\Commands\PublishPermissionMigrations;
 use EragPermission\Commands\UpgradeVersions;
 use EragPermission\Contracts\PermissionContract;
 use EragPermission\Contracts\RoleContract;
+use EragPermission\Middleware\PermissionsMiddleware;
 use EragPermission\Middleware\RolePermissionMiddleware;
 use EragPermission\Models\Permission;
 use EragPermission\Models\Role;
@@ -53,6 +54,9 @@ class PermissionServiceProvider extends ServiceProvider
 
         $router->aliasMiddleware('role', RolePermissionMiddleware::class);
         $router->middlewareGroup('role', [RolePermissionMiddleware::class]);
+
+        $router->aliasMiddleware('permissions', PermissionsMiddleware::class);
+        $router->middlewareGroup('permissions', [PermissionsMiddleware::class]);
 
         if (Schema::hasTable('users') && Schema::hasTable('roles') && Schema::hasTable('permissions')) {
             Permission::with('roles.users')->get()->each(function ($permission) {

@@ -94,8 +94,6 @@ trait HasPermissionsTrait
 
     public function hasPermissionThroughRole($permission): bool
     {
-        $this->load('roles');
-
         return $this->roles->pluck('id')->intersect($permission->roles->pluck('id'))->isNotEmpty();
     }
 

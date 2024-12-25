@@ -6,21 +6,20 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RolePermissionMiddleware
+class PermissionsMiddleware
 {
     /**
      * Handle an incoming request.
+     *
+     * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role = null, $permission = null): Response
+    public function handle(Request $request, Closure $next, ...$permissions): Response
     {
         if (! $request->user()) {
             abort(403, 'Unauthorized action.');
         }
 
-        if (! $request->user()->hasRole($role)) {
-            abort(403, 'You do not have the required role.');
-        }
-        if ($permission !== null && ! $request->user()->hasPermissions($permission)) {
+        if (! $request->user()->hasPermissions($permissions)) {
             abort(403, 'You do not have the required permission.');
         }
 
