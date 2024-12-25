@@ -10,20 +10,18 @@ class RolePermissionMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role = null, $permission = null): Response
+    public function handle(Request $request, Closure $next, ?string $role = null, ?string $permission = null): Response
     {
         if (! $request->user()) {
             abort(403, 'Unauthorized action.');
         }
 
         if (! $request->user()->hasRole($role)) {
-            abort(404, 'Unauthorized action.');
+            abort(403, 'You do not have the required role.');
         }
         if ($permission !== null && ! $request->user()->hasPermissions($permission)) {
-            abort(404, 'Unauthorized action.');
+            abort(403, 'You do not have the required permission.');
         }
 
         return $next($request);
