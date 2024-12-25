@@ -24,6 +24,7 @@
     "homepage": "https://github.com/eramitgupta/laravel-role-permission",
     "require": {
         "php": "^8.0",
+        "laravel/pint": "^1.13",
         "illuminate/auth": "^8.12|^9.0|^10.0|^11.0",
         "illuminate/container": "^8.12|^9.0|^10.0|^11.0",
         "illuminate/contracts": "^8.12|^9.0|^10.0|^11.0",
@@ -38,11 +39,19 @@
         }
     },
     "prefer-stable": true,
+    "minimum-stability": "stable",
     "extra": {
         "laravel": {
             "providers": [
                 "EragPermission\\PermissionServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "lint": "pint",
+        "lint:dirty": "pint --dirty",
+        "post-install-cmd": [
+            "@lint"
+        ]
     }
 }
