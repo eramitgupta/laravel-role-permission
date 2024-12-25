@@ -13,16 +13,16 @@ class PermissionsMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-        public function handle(Request $request, Closure $next, ...$permissions): Response
-        {
-                if (! $request->user()) {
-                    abort(403, 'Unauthorized action.');
-                }
-
-            if (! $request->user()->hasPermissions($permissions)) {
-                  abort(  403, 'You do not have the required permission.');
-            }
-
-            return $next($request);
+    public function handle(Request $request, Closure $next, ...$permissions): Response
+    {
+        if (! $request->user()) {
+            abort(403, 'Unauthorized action.');
         }
+
+        if (! $request->user()->hasPermissions($permissions)) {
+            abort(403, 'You do not have the required permission.');
+        }
+
+        return $next($request);
+    }
 }
