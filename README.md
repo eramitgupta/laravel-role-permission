@@ -252,10 +252,19 @@ if (hasRole('admin')) {
 
 ## Middleware Usage
 
+
 ```php
 Route::group(['middleware' => ['role:admin,post-create']], function () {
-    // Routes protected by role and permission
+    // Routes protected by role and permissions
 });
+
+Route::group(['middleware' => ['permissions:post-create']], function () {
+    // Routes protected by permissions
+});
+
+Route::post('/create-post', [PostController::class, 'create'])->name('post.create')->middleware('role:admin,post-create');
+Route::post('/create-post', [PostController::class, 'create'])->name('post.create')->middleware('permissions:post-create');
+
 ```
 
 ## How to Use Permissions Expiration
