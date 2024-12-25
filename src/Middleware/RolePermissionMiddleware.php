@@ -11,7 +11,7 @@ class RolePermissionMiddleware
     /**
      * Handle an incoming request.
      */
-    public function handle(Request $request, Closure $next, ?string $role = null, ?string $permission = null): Response
+    public function handle(Request $request, Closure $next, $role = null, $permission = null): Response
     {
         if (! $request->user()) {
             abort(403, 'Unauthorized action.');
