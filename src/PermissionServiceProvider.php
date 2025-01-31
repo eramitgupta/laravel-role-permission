@@ -59,7 +59,7 @@ class PermissionServiceProvider extends ServiceProvider
         $router->middlewareGroup('permissions', [PermissionsMiddleware::class]);
 
         if (Schema::hasTable('users') && Schema::hasTable('roles') && Schema::hasTable('permissions')) {
-            Permission::with('roles.users')->get()->each(function ($permission) {
+            Permission::with('roles')->get()->each(function ($permission) {
                 Gate::define($permission->name, function ($user) use ($permission) {
                     return $user->hasPermissionTo($permission);
                 });
