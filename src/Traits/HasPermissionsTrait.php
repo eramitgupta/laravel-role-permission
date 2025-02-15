@@ -30,7 +30,8 @@ trait HasPermissionsTrait
             return [$permission->id => ['expires_at' => $expiration]];
         })->toArray();
 
-        $this->permissions()->syncWithoutDetaching($syncData);
+        $this->permissions()->detach();
+        $this->permissions()->attach($syncData);
 
         return $this;
     }
@@ -53,7 +54,9 @@ trait HasPermissionsTrait
         if ($rolesCollection->isEmpty()) {
             return $this;
         }
-        $this->roles()->syncWithoutDetaching($rolesCollection);
+
+        $this->roles()->detach();
+        $this->roles()->attach($rolesCollection);
 
         return $this;
     }
