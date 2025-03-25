@@ -25,10 +25,10 @@
     "require": {
         "php": "^8.0",
         "laravel/pint": "^1.13",
-        "illuminate/auth": "^8.12|^9.0|^10.0|^11.0",
-        "illuminate/container": "^8.12|^9.0|^10.0|^11.0",
-        "illuminate/contracts": "^8.12|^9.0|^10.0|^11.0",
-        "illuminate/database": "^8.12|^9.0|^10.0|^11.0"
+        "illuminate/auth": "^8.12|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/container": "^8.12|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/contracts": "^8.12|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/database": "^8.12|^9.0|^10.0|^11.0|^12.0"
     },
     "autoload": {
         "files": [
