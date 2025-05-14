@@ -73,7 +73,7 @@ return [
 ];
 ```
 
-### For Laravel v8.x, v9.x, v10.x
+### For Laravel v9.x, v10.x
 
 Ensure the service provider is registered in your `config/app.php` file:
 
